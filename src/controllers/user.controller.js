@@ -5,20 +5,21 @@ import { User } from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 
+
 const registerUser = asyncHandler(async (req, res) => {
    //(1) get user details from frontend i.e user model
    const { fullName, email, username, password } = req.body
 
    //(2) Validation --ADV WAY**
    if (
-      [fullName, email, username, password].some((field) =>
-         field?.trim() === "")
+      [fullName, email, username, password].some(
+         (field) => field?.trim() === "")
    ) {
       throw new ApiError(400, "All fields are required")
    }
 
    //(3) check if user already exists : username etc --ADV WAY***
-   const existedUser = User.findOne({
+   const existedUser = await User.findOne({
       $or: [{ username }, { email }]
    })
    if (existedUser) throw new ApiError(409, " data with this username or email is already existed")
@@ -31,7 +32,9 @@ const registerUser = asyncHandler(async (req, res) => {
    }
 
    //(5) upload them to cloudinry & avatar checking 
+   // console.log(avatarLocalPath) 
    const avatar = await uploadOnCloudinary(avatarLocalPath)
+   // console.log(avatar)  
    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
    if (!avatar) {
       throw new ApiError(400, "avatar file is required")
@@ -62,6 +65,6 @@ const registerUser = asyncHandler(async (req, res) => {
        new ApiResponse(200 , createdUser , "User Registered Successfully!!")
    )
 
-})
+}) 
 
 export { registerUser }
