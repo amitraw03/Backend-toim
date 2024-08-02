@@ -21,7 +21,6 @@ import userRouter from './routes/user.routes.js';  //can override names only if 
 
 //routes declration -- 
 
-// app.use('/users'. userRouter)    //https://localhost:8000/users/register
 // std practice-- defining as general Apis
 app.use('/api/v1/users', userRouter)   // https://localhost:8000/api/v1/users/register
 

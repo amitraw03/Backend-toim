@@ -50,7 +50,7 @@ const userSchema = new Schema({
 userSchema.pre('save', async function (next) {
     if (!this.isModified(this.password)) return next();
 
-    this.password = bcrypt.hash("password", 10)
+    this.password = await bcrypt.hash("password", 10)
     next()
 })
 
@@ -85,4 +85,4 @@ userSchema.methods.generateRefreshToken = function () {
 }
 
 
-export const User = mongoose.model("User", userSchema)
+export const User = mongoose.model("User", userSchema)  //this User model can make direct contact with D.B
