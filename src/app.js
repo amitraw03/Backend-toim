@@ -16,5 +16,14 @@ app.use(express.static("public"))  //data coming in img,vid etc
 app.use(cookieParser())
 
 
+//routes import 
+import userRouter from './routes/user.routes.js';  //can override names only if export done in default manner
+
+//routes declration -- 
+
+// app.use('/users'. userRouter)    //https://localhost:8000/users/register
+// std practice-- defining as general Apis
+app.use('/api/v1/users', userRouter)   // https://localhost:8000/api/v1/users/register
+
 
 export default app;
