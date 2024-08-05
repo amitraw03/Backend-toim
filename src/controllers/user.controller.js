@@ -89,7 +89,7 @@ const loginUser = asyncHandler ( async (req,res )=>{
         const {username , email ,password} =req.body
 
      //(2) checking existence on basis of username or email
-      if(!username || !email){
+      if(!username && !email){
          throw new ApiError(400 ,"Username or email is required")
       }
 
@@ -100,14 +100,17 @@ const loginUser = asyncHandler ( async (req,res )=>{
         if(!user){
          throw new ApiError(404 ,"user doesn't exist!!")
         }
+      
 
      //(4) checking password
-        const passwordValidation =  await user.isPasswordCorrect(password)
-        if(!passwordValidation){
-         throw new ApiError(401 ,"Invalid User credential")
-        }
+     const isPasswordValid = await user.isPasswordCorrect(password)
+     
+     if (!isPasswordValid) {
+      throw new ApiError(401, "Invalid user credentials")
+      }
+  
 
-     //(5) access and refresh Token generation
+     //(5) access and reresh Token generation
     const {accessToken , refreshToken} =  await generateAccessAndRefreshTokens(user._id)
 
      //(5) data we want to send now to loginUser after all above 4 steps 

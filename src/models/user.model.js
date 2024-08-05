@@ -46,22 +46,24 @@ const userSchema = new Schema({
     }
 }, { timestamps: true })
 
+
 //hash password just before save in D.B using pre middleware hook
 userSchema.pre('save', async function (next) {
-    if (!this.isModified(this.password)) return next();
+    if (!this.isModified('password')) return next();
 
-    this.password = await bcrypt.hash("password", 10)
+    this.password = await bcrypt.hash(this.password, 10)
     next()
 })
 
 //checking password property we created
-userSchema.methods.isPasswordCorrect = async function (password) {
+userSchema.methods.isPasswordCorrect = async function (password) { //password is D.B stored
     return await bcrypt.compare(password, this.password)
 }
 
+
 //generating tokens --
 userSchema.methods.generateAccessToken = function () {
-    jwt.sign({   //takes 3 params
+    return jwt.sign({   //takes 3 params
         _id: this._id,
         username: this.username,
 
@@ -73,7 +75,7 @@ userSchema.methods.generateAccessToken = function () {
 }
 
 userSchema.methods.generateRefreshToken = function () {
-    jwt.sign({   //takes 3 params
+    return jwt.sign({   //takes 3 params
         _id: this._id,
 
     }, process.env.REFRESH_TOKEN_SECRET,

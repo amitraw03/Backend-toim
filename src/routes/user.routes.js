@@ -22,14 +22,10 @@ router.route("/register").post(
     registerUser
 ) 
 
-// Route for login user with auth middleware 
-router.route("/login").post(
-    
-    loginUser
+// Route for login user 
+router.route("/login").post(loginUser)
 
-)
-
-//secured routes
+//secured routes with auth middleware 
 router.route("/logout").post(verifyJWT , logoutUser)
 
 
