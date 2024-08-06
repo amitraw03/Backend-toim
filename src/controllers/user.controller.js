@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+import bcrypt from "bcrypt"
 
 const generateAccessAndRefreshTokens = async (userId) =>{  //no asyncHanlder becoz no handling web requests insetad local function
      try{
@@ -26,6 +27,7 @@ const generateAccessAndRefreshTokens = async (userId) =>{  //no asyncHanlder bec
 const registerUser = asyncHandler(async (req, res) => {
    //(1) get user details from frontend i.e user model
    const { fullName, email, username, password } = req.body
+
 
    //(2) Validation --ADV WAY**
    if (
@@ -57,15 +59,18 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new ApiError(400, "avatar file is required")
    }
 
+   // const hashPassword = await bcrypt.hash(password,10) 
+
    //(6) create user obj- create entry in DB
    const user = await User.create({
       fullName,
       avatar: avatar.url,
       coverImage: coverImage?.url || "",  //becoz didn't cheeck coverImage existence before
       email,
-      password,
+      password ,
       username: username.toLowerCase()
    })
+   console.log(user)
 
    //(7) remove password & refresh token field from response
    const createdUser = await User.findById(user._id).select(
@@ -94,17 +99,15 @@ const loginUser = asyncHandler ( async (req,res )=>{
       }
 
      //(3) find the user
-       const user= User.findOne({
+       const user= await User.findOne({
          $or: [{username},{email}]
         })
         if(!user){
          throw new ApiError(404 ,"user doesn't exist!!")
         }
-      
-
+     
      //(4) checking password
      const isPasswordValid = await user.isPasswordCorrect(password)
-     
      if (!isPasswordValid) {
       throw new ApiError(401, "Invalid user credentials")
       }

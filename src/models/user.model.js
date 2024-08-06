@@ -47,17 +47,20 @@ const userSchema = new Schema({
 }, { timestamps: true })
 
 
-//hash password just before save in D.B using pre middleware hook
+// //hash password just before save in D.B using pre middleware hook
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
-
+    if (!this.isModified('password')) return next();  
+    console.log(this)
     this.password = await bcrypt.hash(this.password, 10)
+    
     next()
 })
 
 //checking password property we created
-userSchema.methods.isPasswordCorrect = async function (password) { //password is D.B stored
-    return await bcrypt.compare(password, this.password)
+userSchema.methods.isPasswordCorrect = async function (password) { //password is input password
+    console.log(this.password) //stored password should be hashed
+    console.log(password)
+    return await bcrypt.compare(password, this.password) 
 }
 
 
