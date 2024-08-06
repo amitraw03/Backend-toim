@@ -1,6 +1,6 @@
 // & separately routing we r doing here as extension of app routing
 import { Router } from "express";
-import { loginUser, logoutUser, registerUser } from "../controllers/user.controller.js";  //import in that way only when export not done in default manner
+import { loginUser, logoutUser, registerUser , refreshAccessToken } from "../controllers/user.controller.js";  //import in that way only when export not done in default manner
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -27,6 +27,7 @@ router.route("/login").post(loginUser)
 
 //secured routes with auth middleware 
 router.route("/logout").post(verifyJWT , logoutUser)
+router.route("/refresh-token").post(refreshAccessToken)
 
 
 export default router; 
