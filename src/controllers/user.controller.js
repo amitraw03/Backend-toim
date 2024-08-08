@@ -319,6 +319,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
       )
 })
 
+//Aggregation Pipelines we will use
 const getUserChannelProfile = asyncHandler(async (req, res) => {
    const { username } = req.params  // to extract dynamic segments from the URL path
 
